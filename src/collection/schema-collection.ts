@@ -58,7 +58,7 @@ export class SchemaCollection<
   ): Promise<ExtractCompleteSchema<S> | null | ValidateError> {
     return await this._collectionInsertOne.insertOne(
       this.name,
-      this.schema.validate,
+      { validate: this.schema.validate },
       db,
       obj,
       this._parser,
@@ -105,7 +105,10 @@ export class SchemaCollection<
   ): Promise<ExtractCompleteSchema<S> | null | ValidateError> {
     return await this._collectionUpdateOne.updateOne(
       this.name,
-      (payload) => this.schema.validate(payload, { isPartialValidation: true }),
+      {
+        validate: (payload) =>
+          this.schema.validate(payload, { isPartialValidation: true }),
+      },
       db,
       by,
       matching,

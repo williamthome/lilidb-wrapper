@@ -1,12 +1,13 @@
 import type { IDatabaseUpdateOne } from '@/database/protocols'
+import type { IValidator } from './validator'
 
 export interface ICollectionUpdateOne {
-  updateOne: <Payload, Expected, Err>(
+  updateOne: <Payload, Expected, ValidateError>(
     collectionName: string,
-    validate: (payload: Payload) => Promise<void | undefined | Err>,
+    validate: IValidator<ValidateError>,
     db: IDatabaseUpdateOne,
     by: string,
     matching: unknown,
     as: Payload,
-  ) => Promise<Expected | null | Err>
+  ) => Promise<Expected | null | ValidateError>
 }
