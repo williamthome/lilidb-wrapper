@@ -1,11 +1,11 @@
 import type { IParser } from '@/utils'
 import type {
-  DbDeleteOne,
-  DbGetAll,
-  DbGetMany,
-  DbGetOne,
-  DbInsertOne,
-  DbUpdateOne,
+  IDatabaseDeleteOne,
+  IDatabaseGetAll,
+  IDatabaseGetMany,
+  IDatabaseGetOne,
+  IDatabaseInsertOne,
+  IDatabaseUpdateOne,
 } from '@/database/protocols'
 import type {
   ICollectionDeleteOne,
@@ -53,7 +53,7 @@ export class SchemaCollection<
   ) {}
 
   async insertOne(
-    db: DbInsertOne,
+    db: IDatabaseInsertOne,
     obj: ExtractSchemaForCreation<S>,
   ): Promise<ExtractCompleteSchema<S> | null | ValidateError> {
     return await this._collectionInsertOne.insertOne(
@@ -69,7 +69,7 @@ export class SchemaCollection<
     By extends keyof ExtractCompleteSchema<S> & string,
     Matching extends ExtractCompleteSchema<S>[By]
   >(
-    db: DbGetOne,
+    db: IDatabaseGetOne,
     by: By,
     matching: Matching,
   ): Promise<ExtractCompleteSchema<S> | null> {
@@ -80,14 +80,16 @@ export class SchemaCollection<
     By extends keyof ExtractCompleteSchema<S> & string,
     Matching extends ExtractCompleteSchema<S>[By]
   >(
-    db: DbGetMany,
+    db: IDatabaseGetMany,
     by: By,
     matching: Matching,
   ): Promise<ExtractCompleteSchema<S>[] | null> {
     return await this._collectionGetMany.getMany(this.name, db, by, matching)
   }
 
-  async getAll(db: DbGetAll): Promise<ExtractCompleteSchema<S>[] | null> {
+  async getAll(
+    db: IDatabaseGetAll,
+  ): Promise<ExtractCompleteSchema<S>[] | null> {
     return await this._collectionGetAll.getAll(this.name, db)
   }
 
@@ -96,7 +98,7 @@ export class SchemaCollection<
     Matching extends ExtractCompleteSchema<S>[By],
     As extends ExtractSchemaForModify<S>
   >(
-    db: DbUpdateOne,
+    db: IDatabaseUpdateOne,
     by: By,
     matching: Matching,
     as: As,
@@ -115,7 +117,7 @@ export class SchemaCollection<
     By extends keyof ExtractCompleteSchema<S> & string,
     Matching extends ExtractCompleteSchema<S>[By]
   >(
-    db: DbDeleteOne,
+    db: IDatabaseDeleteOne,
     by: By,
     matching: Matching,
   ): Promise<ExtractCompleteSchema<S> | null> {

@@ -1,10 +1,10 @@
-import type { DbGetMany } from '@/database/protocols'
+import type { IDatabaseGetMany } from '@/database/protocols'
 import type { ICollectionGetMany } from '../protocols'
 
 export class CollectionGetMany implements ICollectionGetMany {
   async getMany<Expected>(
     collectionName: string,
-    db: DbGetMany,
+    db: IDatabaseGetMany,
     by: string,
     matching: unknown,
   ): Promise<Expected[] | null> {

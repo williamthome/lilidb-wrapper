@@ -1,4 +1,4 @@
-export interface DbUpdateOne {
+export interface IDatabaseUpdateOne {
   updateOne: <T>(
     collectionName: string,
     by: string,

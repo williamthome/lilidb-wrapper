@@ -1,11 +1,11 @@
-import type { DbUpdateOne } from '@/database/protocols'
+import type { IDatabaseUpdateOne } from '@/database/protocols'
 import type { ICollectionUpdateOne } from '../protocols'
 
 export class CollectionUpdateOne implements ICollectionUpdateOne {
   async updateOne<Payload, Expected, Err>(
     collectionName: string,
     validate: (payload: Payload) => Promise<void | undefined | Err>,
-    db: DbUpdateOne,
+    db: IDatabaseUpdateOne,
     by: string,
     matching: unknown,
     as: Payload,

@@ -1,10 +1,10 @@
-import type { DbDeleteOne } from '@/database/protocols'
+import type { IDatabaseDeleteOne } from '@/database/protocols'
 import type { ICollectionDeleteOne } from '../protocols'
 
 export class CollectionDeleteOne implements ICollectionDeleteOne {
   async deleteOne<Expected>(
     collectionName: string,
-    db: DbDeleteOne,
+    db: IDatabaseDeleteOne,
     by: string,
     matching: unknown,
   ): Promise<Expected | null> {

@@ -1,10 +1,10 @@
-import type { DbGetOne } from '@/database/protocols'
+import type { IDatabaseGetOne } from '@/database/protocols'
 import type { ICollectionGetOne } from '../protocols'
 
 export class CollectionGetOne implements ICollectionGetOne {
   async getOne<Out>(
     collectionName: string,
-    db: DbGetOne,
+    db: IDatabaseGetOne,
     by: string,
     matching: unknown,
   ): Promise<Out | null> {

@@ -1,1 +1,1 @@
-export * from './map-db'
+export * from './map-database'

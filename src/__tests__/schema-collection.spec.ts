@@ -1,5 +1,5 @@
 import { SchemaCollection } from '@/collection'
-import { MapDb } from '@/database/models'
+import { MapDatabase } from '@/database/models'
 import {
   privateString,
   requiredSchema,
@@ -23,7 +23,7 @@ const makeSut = () => {
     }),
   })
 
-  const db = new MapDb()
+  const db = new MapDatabase()
 
   return { sut, db }
 }

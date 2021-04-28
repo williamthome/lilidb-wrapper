@@ -1,9 +1,9 @@
-import type { DbGetOne } from '@/database/protocols'
+import type { IDatabaseGetOne } from '@/database/protocols'
 
 export interface ICollectionGetOne {
   getOne: <Expected>(
     collectionName: string,
-    db: DbGetOne,
+    db: IDatabaseGetOne,
     by: string,
     matching: unknown,
   ) => Promise<Expected | null>

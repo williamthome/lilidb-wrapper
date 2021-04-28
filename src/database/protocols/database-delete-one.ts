@@ -1,4 +1,4 @@
-export interface DbDeleteOne {
+export interface IDatabaseDeleteOne {
   deleteOne: <T>(
     collectionName: string,
     by: string,

@@ -1,4 +1,4 @@
-export interface DbGetOne {
+export interface IDatabaseGetOne {
   getOne: <T>(
     collectionName: string,
     by: string,

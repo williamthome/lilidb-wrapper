@@ -1,20 +1,20 @@
 import type {
-  DbDeleteOne,
-  DbGetAll,
-  DbGetMany,
-  DbGetOne,
-  DbInsertOne,
-  DbUpdateOne,
+  IDatabaseDeleteOne,
+  IDatabaseGetAll,
+  IDatabaseGetMany,
+  IDatabaseGetOne,
+  IDatabaseInsertOne,
+  IDatabaseUpdateOne,
 } from '../protocols'
 
-export class MapDb
+export class MapDatabase
   implements
-    DbInsertOne,
-    DbGetOne,
-    DbGetMany,
-    DbGetAll,
-    DbUpdateOne,
-    DbDeleteOne {
+    IDatabaseInsertOne,
+    IDatabaseGetOne,
+    IDatabaseGetMany,
+    IDatabaseGetAll,
+    IDatabaseUpdateOne,
+    IDatabaseDeleteOne {
   readonly data: Map<string, unknown[]> = new Map()
 
   async insertOne<T>(collectionName: string, obj: T): Promise<T> {

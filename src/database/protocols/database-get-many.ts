@@ -1,4 +1,4 @@
-export interface DbGetMany {
+export interface IDatabaseGetMany {
   getMany: <T>(
     collectionName: string,
     by: string,
