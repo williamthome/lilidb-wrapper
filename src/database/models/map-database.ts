@@ -4,22 +4,47 @@ import type {
   IDatabaseGetMany,
   IDatabaseGetOne,
   IDatabaseInsertOne,
+  IDatabaseTransaction,
   IDatabaseUpdateOne,
 } from '../protocols'
 
 export class MapDatabase
   implements
+    IDatabaseTransaction,
     IDatabaseInsertOne,
     IDatabaseGetOne,
     IDatabaseGetMany,
     IDatabaseGetAll,
     IDatabaseUpdateOne,
     IDatabaseDeleteOne {
-  readonly data: Map<string, unknown[]> = new Map()
+  private _data: Map<string, unknown[]> = new Map()
+  private _snapshot: Map<string, unknown[]> = new Map()
+  private _inTransaction = false
 
-  async insertOne<T>(collectionName: string, obj: T): Promise<T> {
-    const collection = this.data.get(collectionName)
-    this.data.set(collectionName, [...(collection ?? []), obj])
+  get inTransaction(): boolean {
+    return this._inTransaction
+  }
+
+  async startTransaction(): Promise<void> {
+    if (this.inTransaction) throw new Error('In transaction')
+    this._snapshot = { ...this._data }
+    this._inTransaction = true
+  }
+
+  async commitTransaction(): Promise<void> {
+    if (!this.inTransaction) throw new Error('Not in transaction')
+    this._inTransaction = false
+  }
+
+  async rollback(): Promise<void> {
+    if (!this.inTransaction) throw new Error('Not in transaction')
+    this._data = { ...this._snapshot }
+    this._inTransaction = false
+  }
+
+  async insertOne<T>(collectionName: string, obj: T): Promise<T | null> {
+    const collection = this._data.get(collectionName)
+    this._data.set(collectionName, [...(collection ?? []), obj])
     return obj
   }
 
@@ -28,7 +53,7 @@ export class MapDatabase
     by: string,
     matching: unknown,
   ): Promise<T | null> {
-    const collection = this.data.get(collectionName)
+    const collection = this._data.get(collectionName)
     if (!collection) return null
 
     const index = collection.findIndex(
@@ -46,7 +71,7 @@ export class MapDatabase
     by: string,
     matching: unknown,
   ): Promise<T[] | null> {
-    const collection = this.data.get(collectionName)
+    const collection = this._data.get(collectionName)
     if (!collection) return null
 
     const found = collection.filter(
@@ -57,7 +82,7 @@ export class MapDatabase
   }
 
   async getAll<T>(collectionName: string): Promise<T[] | null> {
-    const collection = this.data.get(collectionName)
+    const collection = this._data.get(collectionName)
     if (!collection) return null
 
     return collection as T[]
@@ -69,7 +94,7 @@ export class MapDatabase
     matching: unknown,
     as: unknown,
   ): Promise<T | null> {
-    const collection = this.data.get(collectionName)
+    const collection = this._data.get(collectionName)
     if (!collection) return null
 
     const index = collection.findIndex(
@@ -82,7 +107,7 @@ export class MapDatabase
 
     collection[index] = updated
 
-    this.data.set(collectionName, collection)
+    this._data.set(collectionName, collection)
 
     return updated as T
   }
@@ -92,7 +117,7 @@ export class MapDatabase
     by: string,
     matching: unknown,
   ): Promise<T | null> {
-    const collection = this.data.get(collectionName)
+    const collection = this._data.get(collectionName)
     if (!collection) return null
 
     const index = collection.findIndex(
@@ -103,7 +128,7 @@ export class MapDatabase
     const deleted = collection[index]
 
     collection.splice(index, 1)
-    this.data.set(collectionName, collection)
+    this._data.set(collectionName, collection)
 
     return deleted as T
   }

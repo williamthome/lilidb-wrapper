@@ -5,6 +5,7 @@ import type {
   IDatabaseGetMany,
   IDatabaseGetOne,
   IDatabaseInsertOne,
+  IDatabaseTransaction,
   IDatabaseUpdateOne,
 } from '@/database/protocols'
 import type {
@@ -14,6 +15,7 @@ import type {
   ICollectionGetOne,
   ICollectionInsertOne,
   ICollectionUpdateOne,
+  ICollectionUsingTransaction,
 } from './protocols'
 import {
   CollectionDeleteOne,
@@ -22,6 +24,7 @@ import {
   CollectionGetOne,
   CollectionInsertOne,
   CollectionUpdateOne,
+  CollectionUsingTransaction,
 } from './contracts'
 import type {
   ExtractCompleteSchema,
@@ -44,6 +47,7 @@ export class SchemaCollection<
       ExtractSchemaForCreation<S>,
       ExtractCompleteSchema<S>
     >,
+    private readonly _collectionUsingTransaction: ICollectionUsingTransaction = new CollectionUsingTransaction(),
     private readonly _collectionInsertOne: ICollectionInsertOne = new CollectionInsertOne(),
     private readonly _collectionGetOne: ICollectionGetOne = new CollectionGetOne(),
     private readonly _collectionGetMany: ICollectionGetMany = new CollectionGetMany(),
@@ -51,6 +55,13 @@ export class SchemaCollection<
     private readonly _collectionUpdateOne: ICollectionUpdateOne = new CollectionUpdateOne(),
     private readonly _collectionDeleteOne: ICollectionDeleteOne = new CollectionDeleteOne(),
   ) {}
+
+  async usingTransaction<T>(
+    db: IDatabaseTransaction,
+    doThis: () => Promise<T>,
+  ): Promise<T | null> {
+    return await this._collectionUsingTransaction.usingTransaction(db, doThis)
+  }
 
   async insertOne(
     db: IDatabaseInsertOne,

@@ -53,4 +53,26 @@ describe('SchemaCollection', () => {
     const foo = await sut.getOne(db, 'foo', 'bar')
     expect(foo).toMatchObject({ foo: 'bar' })
   })
+
+  it('should rollback', async () => {
+    const { sut, db } = makeSut()
+
+    const foo = { foo: 'foo' }
+
+    const updatedFoo = await sut.usingTransaction(db, async () => {
+      await sut.insertOne(db, foo)
+      return await sut.updateOne(
+        db,
+        'foo',
+        (0 as unknown) as string, // throws error for rollback purposes
+        {
+          foo: 'should not change',
+        },
+      )
+    })
+    expect(updatedFoo).toBeNull()
+
+    const foundFoo = await sut.getOne(db, 'foo', foo.foo)
+    expect(foundFoo).toMatchObject(foo)
+  })
 })
