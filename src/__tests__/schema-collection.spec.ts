@@ -85,4 +85,18 @@ describe('SchemaCollection', () => {
     const foos = await sut.getAll(db)
     expect(foos?.length).toBe(2)
   })
+
+  it('should get many', async () => {
+    const { sut, db } = makeSut()
+    await sut.insertOne(db, { foo: 'foo' })
+    await sut.insertOne(db, { foo: 'foo' })
+    const foos = await sut.getMany(db, 'foo', 'foo')
+    expect(foos?.length).toBe(2)
+  })
+
+  it('should return validate error', async () => {
+    const { sut, db } = makeSut()
+    const foo = await sut.insertOne(db, { foo: 'invalid' })
+    expect((foo as Error).message).not.toBeUndefined()
+  })
 })
