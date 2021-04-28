@@ -77,4 +77,12 @@ describe('SchemaCollection', () => {
     const foundFoo = await sut.getOne(db, 'foo', foo.foo)
     expect(foundFoo).toMatchObject(foo)
   })
+
+  it('should get all', async () => {
+    const { sut, db } = makeSut()
+    await sut.insertOne(db, { foo: 'foo' })
+    await sut.insertOne(db, { foo: 'bar' })
+    const foos = await sut.getAll(db)
+    expect(foos?.length).toBe(2)
+  })
 })
