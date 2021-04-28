@@ -9,7 +9,7 @@ export class CollectionInsertOne implements ICollectionInsertOne {
     db: IDatabaseInsertOne,
     obj: Payload,
     parser: IParser<Payload, Expected>,
-  ): Promise<Expected | Err> {
+  ): Promise<Expected | null | Err> {
     const validateError = await validate(obj)
     if (validateError) return validateError
     const parsedObj = await parser.parse(obj)
