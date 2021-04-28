@@ -1,7 +1,7 @@
 import type { IDatabaseTransaction } from '@/database/protocols'
-import type { ICollectionUsingTransaction } from '../protocols'
+import type { IUsingTransaction } from '../protocols'
 
-export class CollectionUsingTransaction implements ICollectionUsingTransaction {
+export class UsingTransaction implements IUsingTransaction {
   async usingTransaction<Expected>(
     db: IDatabaseTransaction,
     doThis: () => Promise<Expected>,

@@ -1,6 +1,6 @@
 import type { IDatabaseTransaction } from '@/database/protocols'
 
-export interface ICollectionUsingTransaction {
+export interface IUsingTransaction {
   usingTransaction: <Expected>(
     db: IDatabaseTransaction,
     doThis: () => Promise<Expected>,

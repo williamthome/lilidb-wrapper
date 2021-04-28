@@ -1,4 +1,5 @@
 import { SchemaCollection } from '@/collection'
+import { UsingTransaction } from '@/collection/contracts'
 import { MapDatabase } from '@/database/models'
 import {
   privateString,
@@ -24,8 +25,9 @@ const makeSut = () => {
   })
 
   const db = new MapDatabase()
+  const { usingTransaction } = new UsingTransaction()
 
-  return { sut, db }
+  return { sut, db, usingTransaction }
 }
 
 describe('SchemaCollection', () => {
@@ -55,18 +57,18 @@ describe('SchemaCollection', () => {
   })
 
   it('should rollback', async () => {
-    const { sut, db } = makeSut()
+    const { sut, db, usingTransaction } = makeSut()
 
     const foo = { foo: 'foo' }
 
-    const updatedFoo = await sut.usingTransaction(db, async () => {
+    const updatedFoo = await usingTransaction(db, async () => {
       await sut.insertOne(db, foo)
       return await sut.updateOne(
         db,
         'foo',
         (0 as unknown) as string, // throws error for rollback purposes
         {
-          foo: 'should not change',
+          foo: 'bar',
         },
       )
     })
