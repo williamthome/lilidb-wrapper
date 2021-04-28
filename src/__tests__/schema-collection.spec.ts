@@ -100,9 +100,16 @@ describe('SchemaCollection', () => {
     expect(foos?.length).toBe(2)
   })
 
-  it('should return validate error', async () => {
+  it('should return validate error on insert', async () => {
     const { sut, db } = makeSut()
     const foo = await sut.insertOne(db, { foo: 'invalid' })
+    expect((foo as Error).message).not.toBeUndefined()
+  })
+
+  it('should return validate error on update', async () => {
+    const { sut, db } = makeSut()
+    await sut.insertOne(db, { foo: 'foo' })
+    const foo = await sut.updateOne(db, 'foo', 'foo', { foo: 'invalid' })
     expect((foo as Error).message).not.toBeUndefined()
   })
 
