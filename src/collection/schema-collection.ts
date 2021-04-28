@@ -1,4 +1,3 @@
-import type { IParser } from '@/utils'
 import type {
   IDatabaseDeleteOne,
   IDatabaseGetAll,
@@ -14,6 +13,7 @@ import type {
   ICollectionGetOne,
   ICollectionInsertOne,
   ICollectionUpdateOne,
+  IParser,
 } from './protocols'
 import {
   CollectionDeleteOne,

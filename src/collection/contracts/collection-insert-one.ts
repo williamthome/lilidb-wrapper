@@ -1,6 +1,5 @@
 import type { IDatabaseInsertOne } from '@/database/protocols'
-import type { IParser } from '@/utils'
-import type { ICollectionInsertOne } from '../protocols'
+import type { ICollectionInsertOne, IParser } from '../protocols'
 
 export class CollectionInsertOne implements ICollectionInsertOne {
   async insertOne<Payload, Expected, ValidateError>(

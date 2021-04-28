@@ -1,5 +1,5 @@
 import type { IDatabaseInsertOne } from '@/database/protocols'
-import type { IParser } from '@/utils'
+import type { IParser } from './parser'
 
 export interface ICollectionInsertOne {
   insertOne: <Payload, Expected, Err>(
