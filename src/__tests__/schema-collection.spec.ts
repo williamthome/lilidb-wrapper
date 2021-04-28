@@ -78,6 +78,15 @@ describe('SchemaCollection', () => {
     expect(foundFoo).toMatchObject(foo)
   })
 
+  it('should commit', async () => {
+    const { sut, db, usingTransaction } = makeSut()
+    const updatedFoo = await usingTransaction(db, async () => {
+      await sut.insertOne(db, { foo: 'foo' })
+      return await sut.updateOne(db, 'foo', 'foo', { foo: 'bar' })
+    })
+    expect(updatedFoo).toMatchObject({ foo: 'bar' })
+  })
+
   it('should get all', async () => {
     const { sut, db } = makeSut()
     await sut.insertOne(db, { foo: 'foo' })
