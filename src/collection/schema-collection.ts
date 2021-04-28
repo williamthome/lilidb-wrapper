@@ -1,12 +1,4 @@
 import type {
-  IDatabaseDeleteOne,
-  IDatabaseGetAll,
-  IDatabaseGetMany,
-  IDatabaseGetOne,
-  IDatabaseInsertOne,
-  IDatabaseUpdateOne,
-} from '@/database/protocols'
-import type {
   ICollectionDeleteOne,
   ICollectionGetAll,
   ICollectionGetMany,
@@ -23,6 +15,7 @@ import {
   CollectionInsertOne,
   CollectionUpdateOne,
 } from './contracts'
+import { Collection } from './collection'
 import type {
   ExtractCompleteSchema,
   ExtractSchemaForCreation,
@@ -36,99 +29,40 @@ export class SchemaCollection<
   T,
   VT extends ValidationType,
   S extends Schema<T, VT>
+> extends Collection<
+  ExtractSchemaForCreation<S>,
+  ExtractSchemaForModify<S>,
+  ExtractCompleteSchema<S>,
+  ValidateError
 > {
   constructor(
-    public readonly name: string,
-    public readonly schema: S,
-    private readonly _parser: IParser<
+    name: string,
+    schema: S,
+    insertParser: IParser<
       ExtractSchemaForCreation<S>,
       ExtractCompleteSchema<S>
     >,
-    private readonly _collectionInsertOne: ICollectionInsertOne = new CollectionInsertOne(),
-    private readonly _collectionGetOne: ICollectionGetOne = new CollectionGetOne(),
-    private readonly _collectionGetMany: ICollectionGetMany = new CollectionGetMany(),
-    private readonly _collectionGetAll: ICollectionGetAll = new CollectionGetAll(),
-    private readonly _collectionUpdateOne: ICollectionUpdateOne = new CollectionUpdateOne(),
-    private readonly _collectionDeleteOne: ICollectionDeleteOne = new CollectionDeleteOne(),
-  ) {}
-
-  async insertOne(
-    db: IDatabaseInsertOne,
-    obj: ExtractSchemaForCreation<S>,
-  ): Promise<ExtractCompleteSchema<S> | null | ValidateError> {
-    return await this._collectionInsertOne.insertOne(
-      this.name,
-      { validate: this.schema.validate },
-      db,
-      obj,
-      this._parser,
-    )
-  }
-
-  async getOne<
-    By extends keyof ExtractCompleteSchema<S> & string,
-    Matching extends ExtractCompleteSchema<S>[By]
-  >(
-    db: IDatabaseGetOne,
-    by: By,
-    matching: Matching,
-  ): Promise<ExtractCompleteSchema<S> | null> {
-    return await this._collectionGetOne.getOne(this.name, db, by, matching)
-  }
-
-  async getMany<
-    By extends keyof ExtractCompleteSchema<S> & string,
-    Matching extends ExtractCompleteSchema<S>[By]
-  >(
-    db: IDatabaseGetMany,
-    by: By,
-    matching: Matching,
-  ): Promise<ExtractCompleteSchema<S>[] | null> {
-    return await this._collectionGetMany.getMany(this.name, db, by, matching)
-  }
-
-  async getAll(
-    db: IDatabaseGetAll,
-  ): Promise<ExtractCompleteSchema<S>[] | null> {
-    return await this._collectionGetAll.getAll(this.name, db)
-  }
-
-  async updateOne<
-    By extends keyof ExtractCompleteSchema<S> & string,
-    Matching extends ExtractCompleteSchema<S>[By],
-    As extends ExtractSchemaForModify<S>
-  >(
-    db: IDatabaseUpdateOne,
-    by: By,
-    matching: Matching,
-    as: As,
-  ): Promise<ExtractCompleteSchema<S> | null | ValidateError> {
-    return await this._collectionUpdateOne.updateOne(
-      this.name,
+    collectionInsertOne: ICollectionInsertOne = new CollectionInsertOne(),
+    collectionGetOne: ICollectionGetOne = new CollectionGetOne(),
+    collectionGetMany: ICollectionGetMany = new CollectionGetMany(),
+    collectionGetAll: ICollectionGetAll = new CollectionGetAll(),
+    collectionUpdateOne: ICollectionUpdateOne = new CollectionUpdateOne(),
+    collectionDeleteOne: ICollectionDeleteOne = new CollectionDeleteOne(),
+  ) {
+    super(
+      name,
+      insertParser,
+      { validate: schema.validate },
       {
         validate: (payload) =>
-          this.schema.validate(payload, { isPartialValidation: true }),
+          schema.validate(payload, { isPartialValidation: true }),
       },
-      db,
-      by,
-      matching,
-      as,
-    )
-  }
-
-  async deleteOne<
-    By extends keyof ExtractCompleteSchema<S> & string,
-    Matching extends ExtractCompleteSchema<S>[By]
-  >(
-    db: IDatabaseDeleteOne,
-    by: By,
-    matching: Matching,
-  ): Promise<ExtractCompleteSchema<S> | null> {
-    return await this._collectionDeleteOne.deleteOne(
-      this.name,
-      db,
-      by,
-      matching,
+      collectionInsertOne,
+      collectionGetOne,
+      collectionGetMany,
+      collectionGetAll,
+      collectionUpdateOne,
+      collectionDeleteOne,
     )
   }
 }
