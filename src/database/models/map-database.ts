@@ -1,4 +1,5 @@
 import type {
+  IDatabaseConnection,
   IDatabaseDeleteOne,
   IDatabaseGetAll,
   IDatabaseGetMany,
@@ -10,6 +11,7 @@ import type {
 
 export class MapDatabase
   implements
+    IDatabaseConnection,
     IDatabaseTransaction,
     IDatabaseInsertOne,
     IDatabaseGetOne,
@@ -19,10 +21,25 @@ export class MapDatabase
     IDatabaseDeleteOne {
   private _data: Map<string, unknown[]> = new Map()
   private _snapshot: Map<string, unknown[]> = new Map()
+  private _isConnected = false
   private _inTransaction = false
+
+  get isConnected(): boolean {
+    return this._isConnected
+  }
 
   get inTransaction(): boolean {
     return this._inTransaction
+  }
+
+  async connect(): Promise<void> {
+    if (this.isConnected) throw new Error('Is connected')
+    this._isConnected = true
+  }
+
+  async disconnect(): Promise<void> {
+    if (!this.isConnected) throw new Error('Is not connected')
+    this._isConnected = false
   }
 
   async startTransaction(): Promise<void> {

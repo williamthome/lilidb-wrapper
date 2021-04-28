@@ -1,5 +1,5 @@
 import { SchemaCollection } from '@/collection'
-import { UsingTransaction } from '@/collection/contracts'
+import { UsingConnection, UsingTransaction } from '@/collection/contracts'
 import { MapDatabase } from '@/database/models'
 import {
   privateString,
@@ -26,8 +26,9 @@ const makeSut = () => {
 
   const db = new MapDatabase()
   const { usingTransaction } = new UsingTransaction()
+  const { usingConnection } = new UsingConnection()
 
-  return { sut, db, usingTransaction }
+  return { sut, db, usingTransaction, usingConnection }
 }
 
 describe('SchemaCollection', () => {
@@ -103,5 +104,39 @@ describe('SchemaCollection', () => {
     const { sut, db } = makeSut()
     const foo = await sut.insertOne(db, { foo: 'invalid' })
     expect((foo as Error).message).not.toBeUndefined()
+  })
+
+  it('should connect', async () => {
+    const { db, usingConnection } = makeSut()
+    await usingConnection(db, async () => undefined)
+    expect(db.isConnected).toBe(true)
+  })
+
+  it('should disconnect', async () => {
+    const { db, usingConnection } = makeSut()
+    await usingConnection(db, async () => undefined, true)
+    expect(db.isConnected).toBe(false)
+  })
+
+  it('should return null and stay connected if connection throws', async () => {
+    const { db, usingConnection } = makeSut()
+    const result = await usingConnection(db, async () => {
+      throw new Error()
+    })
+    expect(db.isConnected).toBe(true)
+    expect(result).toBeNull()
+  })
+
+  it('should return null and disconnect if connection throws', async () => {
+    const { db, usingConnection } = makeSut()
+    const result = await usingConnection(
+      db,
+      async () => {
+        throw new Error()
+      },
+      true,
+    )
+    expect(db.isConnected).toBe(false)
+    expect(result).toBeNull()
   })
 })
