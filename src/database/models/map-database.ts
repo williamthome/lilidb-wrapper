@@ -27,7 +27,7 @@ export class MapDatabase
 
   async startTransaction(): Promise<void> {
     if (this.inTransaction) throw new Error('In transaction')
-    this._snapshot = { ...this._data }
+    this._snapshot = new Map(this._data)
     this._inTransaction = true
   }
 
@@ -38,7 +38,7 @@ export class MapDatabase
 
   async rollback(): Promise<void> {
     if (!this.inTransaction) throw new Error('Not in transaction')
-    this._data = { ...this._snapshot }
+    this._data = new Map(this._snapshot)
     this._inTransaction = false
   }
 
