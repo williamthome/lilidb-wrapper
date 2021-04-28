@@ -1,0 +1,18 @@
+import type { DbInsertOne } from '@/database/protocols'
+import type { IParser } from '@/utils'
+import type { ICollectionInsertOne } from '../protocols'
+
+export class CollectionInsertOne implements ICollectionInsertOne {
+  async insertOne<Payload, Expected, Err>(
+    collectionName: string,
+    validate: (payload: Payload) => Promise<void | undefined | Err>,
+    db: DbInsertOne,
+    obj: Payload,
+    parser: IParser<Payload, Expected>,
+  ): Promise<Expected | Err> {
+    const validateError = await validate(obj)
+    if (validateError) return validateError
+    const parsedObj = await parser.parse(obj)
+    return await db.insertOne(collectionName, parsedObj)
+  }
+}
