@@ -1,55 +1,120 @@
 import {
-  MapDatabase,
-  SchemaCollection,
   UsingConnection,
   UsingTransaction,
+  Collections,
+  Collection,
+  IParser,
+  InsertOneInDb,
+  IValidator,
+  GetOneFromDb,
+  UpdateOneInDb,
+  MongoDbWrapper,
 } from '@williamthome/lilidb-wrapper'
 import {
-  privateString,
   requiredSchema,
   requiredString,
+  ExtractCompleteSchema,
+  ExtractSchemaForModify,
+  ExtractSchemaForCreation,
+  ValidateError,
+  privateString,
 } from '@williamthome/lilischema'
 
-const schema = requiredSchema({
+const fooSchema = requiredSchema({
   id: privateString(),
   foo: requiredString({ mustBe: ['foo', 'bar'] }),
 })
 
-const sut = new SchemaCollection<
-  typeof schema['schemas'],
-  typeof schema['validationType'],
-  typeof schema
->('foo', schema, {
-  parse: async (payload) => ({
-    id: (Math.random() * 999).toString(),
-    ...payload,
-  }),
-})
+type FooSchema = typeof fooSchema
+type Foo = ExtractCompleteSchema<FooSchema>
+type FooForUpdate = ExtractSchemaForModify<FooSchema>
+type FooForCreation = ExtractSchemaForCreation<FooSchema>
 
-const db = new MapDatabase()
+const fooCreateParser: IParser<FooForCreation, Foo> = {
+  parse: async (dto: FooForCreation) => ({
+    id: (Math.random() * 999).toString(),
+    ...dto,
+  }),
+}
+const fooCreateValidator: IValidator<ValidateError> = {
+  validate: (toValidate: unknown) => fooSchema.validate(toValidate),
+}
+const fooUpdateValidator: IValidator<ValidateError> = {
+  validate: (toValidate: unknown) =>
+    fooSchema.validate(toValidate, { isPartialValidation: true }),
+}
+
+type FooCollection = Collections<
+  [Collection<'fooCollection', Foo, FooForUpdate, FooForCreation>]
+>
+
+const insertOneInDb = new InsertOneInDb<ValidateError, FooCollection>()
+const getOneFromDb = new GetOneFromDb<FooCollection>()
+const updateOneInDb = new UpdateOneInDb<ValidateError, FooCollection>()
 const { usingTransaction } = new UsingTransaction()
 const { usingConnection } = new UsingConnection()
 
-async function test(): Promise<void> {
-  const createdFoo = await sut.insertOne(db, { foo: 'foo' })
-  console.log({ createdFoo })
+// const db = new MapDbWrapper<FooCollection>()
+const db = new MongoDbWrapper(
+  'mongodb://localhost:27001,localhost:27002,localhost:27003',
+)
 
-  const foundedFoo = await sut.getOne(db, 'foo', 'foo')
-  console.log({ foundedFoo })
+usingConnection(
+  db,
+  {
+    doThis: async () => {
+      const createdFoo = await insertOneInDb.insertOne(
+        'fooCollection',
+        fooCreateValidator,
+        db,
+        fooCreateParser,
+        { foo: 'foo' },
+      )
+      console.log({ createdFoo })
 
-  const updatedFoo = await sut.updateOne(db, 'foo', 'foo', { foo: 'bar' })
-  console.log({ updatedFoo })
+      if (!createdFoo || createdFoo instanceof Error) return
 
-  const validationError = await usingConnection(db, async () => {
-    return await usingTransaction(db, async () => {
-      return await sut.updateOne(db, 'foo', 'foo', { foo: 'invalid' })
-    })
-  })
-  console.log({ validationError })
+      const foundedFoo = await getOneFromDb.getOne(
+        'fooCollection',
+        db,
+        'id',
+        createdFoo.id,
+      )
+      console.log({ foundedFoo })
 
-  console.log({ isConnected: db.isConnected })
-  await usingConnection(db, async () => undefined, true)
-  console.log({ isConnected: db.isConnected })
-}
+      const updatedFoo = await updateOneInDb.updateOne(
+        'fooCollection',
+        fooUpdateValidator,
+        db,
+        'id',
+        createdFoo.id,
+        { foo: 'bar' },
+      )
+      console.log({ updatedFoo })
 
-test()
+      await usingTransaction(db, {
+        doThis: async () => {
+          await insertOneInDb.insertOne(
+            'fooCollection',
+            fooCreateValidator,
+            db,
+            fooCreateParser,
+            {
+              foo: 'doNotInsertThis',
+            },
+          )
+          const validationError = await updateOneInDb.updateOne(
+            'fooCollection',
+            fooUpdateValidator,
+            db,
+            'id',
+            createdFoo.id,
+            { foo: 'invalid' },
+          )
+          console.log({ validationError })
+        },
+      })
+    },
+  },
+  true,
+).catch((error) => console.error({ error }))

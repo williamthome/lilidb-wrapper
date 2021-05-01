@@ -17,15 +17,16 @@
   },
   "scripts": {
     "build": "rimraf dist && npx ttsc -p tsconfig.build.json",
+    "link": "npm run build && npm link",
     "update": "npx npm-check-updates -u && npm install",
     "lint": "npx eslint src/* --ext .ts --cache --fix",
     "format": "npx prettier --write ./src/**/*.{ts,json}",
     "test": "npx jest --passWithNoTests --silent --noStackTrace --runInBand --detectOpenHandles",
     "test:verbose": "npx jest --passWithNoTests --runInBand --detectOpenHandles",
-    "test:unit": "npm test -- --watch \"^(.*/)*(.*\\.)*(spec)\\.ts$\"",
-    "test:unit:verbose": "npm run test:verbose -- --watch \"^(.*/)*(.*\\.)*(spec)\\.ts$\"",
-    "test:integration": "npm test -- --watch \"^(.*/)*(.*\\.)*(test)\\.ts$\"",
-    "test:integration:verbose": "npm run test:verbose -- --watch \"^(.*/)*(.*\\.)*(test)\\.ts$\"",
+    "test:unit": "npm test -- --watch --testPathPattern=\".*/__tests__/.*.spec.ts$\"",
+    "test:unit:verbose": "npm run test:verbose -- --watch --testPathPattern=\".*/__tests__/.*.spec.ts$\"",
+    "test:integration": "npm test -- --watch --testPathPattern=\".*/__tests__/.*.test.ts$\"",
+    "test:integration:verbose": "npm run test:verbose -- --watch --testPathPattern=\".*/__tests__/.*.test.ts$\"",
     "test:staged": "npm test -- --findRelatedTests",
     "test:ci": "npm test -- --coverage",
     "test:clear": "npx jest --clearCache",
@@ -56,6 +57,7 @@
   ],
   "devDependencies": {
     "@types/jest": "^26.0.23",
+    "@types/mongodb": "^3.6.12",
     "@types/node": "^15.0.0",
     "@typescript-eslint/eslint-plugin": "^4.22.0",
     "@typescript-eslint/parser": "^4.22.0",
@@ -66,6 +68,7 @@
     "husky": "^6.0.0",
     "jest": "^26.6.3",
     "lint-staged": "^10.5.4",
+    "mongodb-memory-server": "^6.9.6",
     "prettier": "^2.2.1",
     "rimraf": "^3.0.2",
     "ts-jest": "^26.5.5",
@@ -77,6 +80,6 @@
     "typescript-transform-paths": "^2.2.3"
   },
   "dependencies": {
-    "@williamthome/lilischema": "^0.0.9"
+    "mongodb": "^3.6.6"
   }
 }
