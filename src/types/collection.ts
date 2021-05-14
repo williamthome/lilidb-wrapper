@@ -19,9 +19,7 @@ export type Collections<
   T extends Array<Collection<string, unknown, unknown, unknown>> | unknown
 > = T
 
-export type ExtractCollectionNames<T> = T extends Collections<
-  infer TCollections
->
+export type ExtractCollectionNames<T> = T extends Array<infer TCollections>
   ? TCollections extends Array<infer TCollection>
     ? TCollection extends Collection<infer TName, any, any, any>
       ? TName
@@ -29,9 +27,7 @@ export type ExtractCollectionNames<T> = T extends Collections<
     : string
   : string
 
-export type ExtractCollectionTypes<T> = T extends Collections<
-  infer TCollections
->
+export type ExtractCollectionTypes<T> = T extends Array<infer TCollections>
   ? TCollections extends Array<infer TCollection>
     ? TCollection extends Collection<any, infer TType, any, any>
       ? TType
@@ -42,51 +38,43 @@ export type ExtractCollectionTypes<T> = T extends Collections<
 export type ExtractCollectionTypeByName<
   T,
   TCollectionName extends ExtractCollectionNames<T>
-> = T extends Collections<infer TCollections>
-  ? TCollections extends Array<infer TCollection>
-    ? TCollection extends Collection<infer TName, infer TType, any, any>
-      ? TName extends TCollectionName
-        ? TType
-        : never
-      : unknown
+> = T extends Array<infer TCollection>
+  ? TCollection extends Collection<infer TName, infer TType, any, any>
+    ? TName extends TCollectionName
+      ? TType
+      : never
     : unknown
   : unknown
 
 export type ExtractCollectionUpdateTypeByName<
   T,
   TCollectionName extends ExtractCollectionNames<T>
-> = T extends Collections<infer TCollections>
-  ? TCollections extends Array<infer TCollection>
-    ? TCollection extends Collection<infer TName, any, infer TType, any>
-      ? TName extends TCollectionName
-        ? TType
-        : never
-      : unknown
+> = T extends Array<infer TCollection>
+  ? TCollection extends Collection<infer TName, any, infer TType, any>
+    ? TName extends TCollectionName
+      ? TType
+      : never
     : unknown
   : unknown
 
 export type ExtractCollectionCreateTypeByName<
   T,
   TCollectionName extends ExtractCollectionNames<T>
-> = T extends Collections<infer TCollections>
-  ? TCollections extends Array<infer TCollection>
-    ? TCollection extends Collection<infer TName, any, any, infer TType>
-      ? TName extends TCollectionName
-        ? TType
-        : never
-      : unknown
+> = T extends Array<infer TCollection>
+  ? TCollection extends Collection<infer TName, any, any, infer TType>
+    ? TName extends TCollectionName
+      ? TType
+      : never
     : unknown
   : unknown
 
 export type ExtractCollectionNameByType<
   T,
   TCollectionType extends ExtractCollectionTypes<T>
-> = T extends Collections<infer TCollections>
-  ? TCollections extends Array<infer TCollection>
-    ? TCollection extends Collection<infer TName, infer TType, any, any>
-      ? TType extends TCollectionType
-        ? TName
-        : never
-      : string
+> = T extends Array<infer TCollection>
+  ? TCollection extends Collection<infer TName, infer TType, any, any>
+    ? TType extends TCollectionType
+      ? TName
+      : never
     : string
   : string
