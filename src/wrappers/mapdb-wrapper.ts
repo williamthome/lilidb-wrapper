@@ -164,7 +164,7 @@ export class MapDbWrapper<TCollection extends Collections<unknown>>
     if (index === -1) return null
 
     const found = collection[index]
-    const updated = Object.assign(found, as)
+    const updated = Object.assign({}, found, as)
 
     collection[index] = updated
 

@@ -48,7 +48,7 @@ export class IDatabaseUpdateOneSpy<TCollection extends Collections<unknown>>
 
     this.result = this.shouldReturnNull
       ? null
-      : { ...Object(this.originalState), ...Object(as) }
+      : Object.assign({}, this.originalState, as)
 
     return this.result as TExpected | null
   }
