@@ -10,11 +10,11 @@ export class UsingConnection implements IUsingConnection {
     try {
       !db.isConnected && (await db.connect())
       const done = await todo.doThis()
-      disconnectWhenDone && (await db.disconnect())
       return done
     } catch {
-      db.isConnected && disconnectWhenDone && (await db.disconnect())
       return null
+    } finally {
+      db.isConnected && disconnectWhenDone && (await db.disconnect())
     }
   }
 }

@@ -49,8 +49,8 @@ describe('UsingConnection', () => {
 
   it('should return null and disconnect if db throws', async () => {
     const { sut, db, todo } = makeSut()
-    db.isConnected = true
     db.throwable.shouldThrow = true
+    db.throwable.once = true
     const result = await sut.usingConnection(db, todo, true)
     expect(db.isConnected).toBe(false)
     expect(result).toBeNull()
