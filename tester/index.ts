@@ -8,7 +8,7 @@ import {
   IValidator,
   GetOneFromDb,
   UpdateOneInDb,
-  MongoDbWrapper,
+  MapDbWrapper,
 } from '@williamthome/lilidb-wrapper'
 import {
   requiredSchema,
@@ -54,10 +54,7 @@ const updateOneInDb = new UpdateOneInDb<ValidateError, FooCollection>()
 const { usingTransaction } = new UsingTransaction()
 const { usingConnection } = new UsingConnection()
 
-// const db = new MapDbWrapper<FooCollection>()
-const db = new MongoDbWrapper(
-  'mongodb://localhost:27001,localhost:27002,localhost:27003',
-)
+const db = new MapDbWrapper<FooCollection>()
 
 usingConnection(
   db,
