@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@williamthome/lilischema": "^0.0.9",
     "ts-node-dev": "^1.1.6"
   }
 }

@@ -117,4 +117,4 @@ usingConnection(
     },
   },
   true,
-).catch((error) => console.error({ error }))
+).catch((error: unknown) => console.error({ error }))
