@@ -1,5 +1,6 @@
 export * from './protocols'
 export * from './protocols/crud'
 export * from './types'
+export * from './types/helpers'
 export * from './contracts'
 export * from './wrappers'
