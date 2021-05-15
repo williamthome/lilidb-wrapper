@@ -1,6 +1,5 @@
+import { CollectionFactory } from '@/contracts'
 import type {
-  Collections,
-  Collection,
   ExtractCollectionNames,
   ExtractCollectionTypes,
   ExtractCollectionTypeByName,
@@ -10,9 +9,18 @@ import type {
 } from '@/types'
 import type { Bar, Foo } from './expected-mock'
 
-export type FoobarCollection = Collections<
-  [Collection<'fooCollection', Foo>, Collection<'barCollection', Bar>]
->
+// export type FoobarCollection = Collections<
+//   [Collection<'fooCollection', Foo>, Collection<'barCollection', Bar>]
+// >
+
+const cfactory = new CollectionFactory()
+
+const collections = [
+  cfactory.collectionName('fooCollection').types<Foo>(),
+  cfactory.collectionName('barCollection').types<Bar>(),
+]
+
+export type FoobarCollection = typeof collections
 
 export type FoobarCollectionNames = ExtractCollectionNames<FoobarCollection>
 export type FoobarCollectionTypes = ExtractCollectionTypes<FoobarCollection>
