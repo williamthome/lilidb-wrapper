@@ -5,12 +5,12 @@ import type {
 } from '@/types'
 import type { IDatabaseGetAll } from '@/protocols'
 
-export interface IGetAllFromDb<TCollection extends Collections<unknown>> {
+export interface IGetAllFromDb<TCollections extends Collections> {
   getAll: <
-    TCollectionName extends ExtractCollectionNames<TCollection>,
-    TExpected extends ExtractCollectionTypeByName<TCollection, TCollectionName>
+    TCollectionName extends ExtractCollectionNames<TCollections>,
+    TExpected extends ExtractCollectionTypeByName<TCollections, TCollectionName>
   >(
     collectionName: TCollectionName,
-    db: IDatabaseGetAll<TCollection>,
+    db: IDatabaseGetAll<TCollections>,
   ) => Promise<TExpected[] | null>
 }

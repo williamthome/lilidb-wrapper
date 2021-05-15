@@ -8,9 +8,9 @@ import type {
 import type { IDatabaseDeleteOne } from '@/protocols'
 import { Spy } from '@/__tests__/unit/__helpers__'
 
-export class IDatabaseDeleteOneSpy<TCollection extends Collections<unknown>>
+export class IDatabaseDeleteOneSpy<TCollections extends Collections>
   extends Spy
-  implements IDatabaseDeleteOne<TCollection> {
+  implements IDatabaseDeleteOne<TCollections> {
   result?: null | unknown
   shouldReturnNull = false
 
@@ -18,13 +18,16 @@ export class IDatabaseDeleteOneSpy<TCollection extends Collections<unknown>>
   by?: string
   matching?: unknown
 
-  constructor(readonly expected: ExtractCollectionTypes<TCollection>) {
+  constructor(readonly expected: ExtractCollectionTypes<TCollections>) {
     super()
   }
 
   async deleteOne<
-    TCollectionName extends ExtractCollectionNames<TCollection>,
-    TExpected extends ExtractCollectionTypeByName<TCollection, TCollectionName>,
+    TCollectionName extends ExtractCollectionNames<TCollections>,
+    TExpected extends ExtractCollectionTypeByName<
+      TCollections,
+      TCollectionName
+    >,
     TBy extends StringKeyOf<TExpected>,
     TMatching extends KeyValueOf<TExpected, TBy>
   >(

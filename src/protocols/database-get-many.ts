@@ -5,10 +5,13 @@ import type {
   ExtractCollectionTypeByName,
 } from '@/types'
 
-export interface IDatabaseGetMany<TCollection extends Collections<unknown>> {
+export interface IDatabaseGetMany<TCollections extends Collections> {
   getMany: <
-    TCollectionName extends ExtractCollectionNames<TCollection>,
-    TExpected extends ExtractCollectionTypeByName<TCollection, TCollectionName>,
+    TCollectionName extends ExtractCollectionNames<TCollections>,
+    TExpected extends ExtractCollectionTypeByName<
+      TCollections,
+      TCollectionName
+    >,
     TBy extends StringKeyOf<TExpected>,
     TMatching extends KeyValueOf<TExpected, TBy>
   >(

@@ -6,9 +6,9 @@ import type {
 import type { IDatabaseInsertOne } from '@/protocols'
 import { Spy } from '@/__tests__/unit/__helpers__'
 
-export class IDatabaseInsertOneSpy<TCollection extends Collections<unknown>>
+export class IDatabaseInsertOneSpy<TCollections extends Collections>
   extends Spy
-  implements IDatabaseInsertOne<TCollection> {
+  implements IDatabaseInsertOne<TCollections> {
   result?: null | unknown
   shouldReturnNull = false
 
@@ -16,8 +16,8 @@ export class IDatabaseInsertOneSpy<TCollection extends Collections<unknown>>
   obj?: unknown
 
   async insertOne<
-    TCollectionName extends ExtractCollectionNames<TCollection>,
-    TExpected extends ExtractCollectionTypeByName<TCollection, TCollectionName>
+    TCollectionName extends ExtractCollectionNames<TCollections>,
+    TExpected extends ExtractCollectionTypeByName<TCollections, TCollectionName>
   >(
     collectionName: TCollectionName,
     obj: TExpected,

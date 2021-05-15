@@ -5,10 +5,13 @@ import type {
   ExtractCollectionTypeByName,
 } from '@/types'
 
-export interface IDatabaseDeleteOne<TCollection extends Collections<unknown>> {
+export interface IDatabaseDeleteOne<TCollections extends Collections> {
   deleteOne: <
-    TCollectionName extends ExtractCollectionNames<TCollection>,
-    TExpected extends ExtractCollectionTypeByName<TCollection, TCollectionName>,
+    TCollectionName extends ExtractCollectionNames<TCollections>,
+    TExpected extends ExtractCollectionTypeByName<
+      TCollections,
+      TCollectionName
+    >,
     TBy extends StringKeyOf<TExpected>,
     TMatching extends KeyValueOf<TExpected, TBy>
   >(

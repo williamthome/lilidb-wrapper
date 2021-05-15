@@ -8,23 +8,24 @@ import type {
 import type { IDatabaseUpdateOne } from '@/protocols'
 import type { IUpdateOneInDb, IValidator } from '@/protocols/crud'
 
-export class UpdateOneInDb<
-  TValidateError,
-  TCollection extends Collections<unknown>
-> implements IUpdateOneInDb<TValidateError, TCollection> {
+export class UpdateOneInDb<TValidateError, TCollections extends Collections>
+  implements IUpdateOneInDb<TValidateError, TCollections> {
   async updateOne<
-    TCollectionName extends ExtractCollectionNames<TCollection>,
-    TExpected extends ExtractCollectionTypeByName<TCollection, TCollectionName>,
+    TCollectionName extends ExtractCollectionNames<TCollections>,
+    TExpected extends ExtractCollectionTypeByName<
+      TCollections,
+      TCollectionName
+    >,
     TBy extends StringKeyOf<TExpected>,
     TMatching extends KeyValueOf<TExpected, TBy>,
     TForUpdate extends ExtractCollectionUpdateTypeByName<
-      TCollection,
+      TCollections,
       TCollectionName
     >
   >(
     collectionName: TCollectionName,
     validator: IValidator<TValidateError>,
-    db: IDatabaseUpdateOne<TCollection>,
+    db: IDatabaseUpdateOne<TCollections>,
     by: TBy,
     matching: TMatching,
     as: TForUpdate,

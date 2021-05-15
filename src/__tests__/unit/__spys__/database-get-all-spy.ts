@@ -7,21 +7,21 @@ import type {
 import type { IDatabaseGetAll } from '@/protocols'
 import { Spy } from '@/__tests__/unit/__helpers__'
 
-export class IDatabaseGetAllSpy<TCollection extends Collections<unknown>>
+export class IDatabaseGetAllSpy<TCollections extends Collections>
   extends Spy
-  implements IDatabaseGetAll<TCollection> {
+  implements IDatabaseGetAll<TCollections> {
   result?: null | unknown[]
   shouldReturnNull = false
 
   collectionName?: string
 
-  constructor(readonly expected: ExtractCollectionTypes<TCollection>[]) {
+  constructor(readonly expected: ExtractCollectionTypes<TCollections>[]) {
     super()
   }
 
   async getAll<
-    TCollectionName extends ExtractCollectionNames<TCollection>,
-    TExpected extends ExtractCollectionTypeByName<TCollection, TCollectionName>
+    TCollectionName extends ExtractCollectionNames<TCollections>,
+    TExpected extends ExtractCollectionTypeByName<TCollections, TCollectionName>
   >(collectionName: TCollectionName): Promise<TExpected[] | null> {
     this.collectionName = collectionName
 

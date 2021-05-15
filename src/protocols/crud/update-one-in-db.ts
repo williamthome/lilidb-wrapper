@@ -10,21 +10,24 @@ import type { IValidator } from './validator'
 
 export interface IUpdateOneInDb<
   TValidateError,
-  TCollection extends Collections<unknown>
+  TCollections extends Collections
 > {
   updateOne: <
-    TCollectionName extends ExtractCollectionNames<TCollection>,
-    TExpected extends ExtractCollectionTypeByName<TCollection, TCollectionName>,
+    TCollectionName extends ExtractCollectionNames<TCollections>,
+    TExpected extends ExtractCollectionTypeByName<
+      TCollections,
+      TCollectionName
+    >,
     TBy extends StringKeyOf<TExpected>,
     TMatching extends KeyValueOf<TExpected, TBy>,
     TForUpdate extends ExtractCollectionUpdateTypeByName<
-      TCollection,
+      TCollections,
       TCollectionName
     >
   >(
     collectionName: TCollectionName,
     validate: IValidator<TValidateError>,
-    db: IDatabaseUpdateOne<TCollection>,
+    db: IDatabaseUpdateOne<TCollections>,
     by: TBy,
     matching: TMatching,
     as: TForUpdate,

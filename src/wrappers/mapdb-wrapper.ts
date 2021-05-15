@@ -17,17 +17,17 @@ import type {
   IDatabaseUpdateOne,
 } from '@/protocols'
 
-export class MapDbWrapper<TCollection extends Collections<unknown>>
+export class MapDbWrapper<TCollections extends Collections>
   implements
     IDatabaseConnection,
     IDatabaseTransaction,
-    IDatabaseInsertOne<TCollection>,
-    IDatabaseInsertMany<TCollection>,
-    IDatabaseGetOne<TCollection>,
-    IDatabaseGetMany<TCollection>,
-    IDatabaseGetAll<TCollection>,
-    IDatabaseUpdateOne<TCollection>,
-    IDatabaseDeleteOne<TCollection> {
+    IDatabaseInsertOne<TCollections>,
+    IDatabaseInsertMany<TCollections>,
+    IDatabaseGetOne<TCollections>,
+    IDatabaseGetMany<TCollections>,
+    IDatabaseGetAll<TCollections>,
+    IDatabaseUpdateOne<TCollections>,
+    IDatabaseDeleteOne<TCollections> {
   private _data: Map<string, unknown[]> = new Map()
   private _snapshot: Map<string, unknown[]> = new Map()
   private _isConnected = false
@@ -64,8 +64,8 @@ export class MapDbWrapper<TCollection extends Collections<unknown>>
   }
 
   async insertOne<
-    TCollectionName extends ExtractCollectionNames<TCollection>,
-    TExpected extends ExtractCollectionTypeByName<TCollection, TCollectionName>
+    TCollectionName extends ExtractCollectionNames<TCollections>,
+    TExpected extends ExtractCollectionTypeByName<TCollections, TCollectionName>
   >(
     collectionName: TCollectionName,
     obj: TExpected,
@@ -76,8 +76,8 @@ export class MapDbWrapper<TCollection extends Collections<unknown>>
   }
 
   async insertMany<
-    TCollectionName extends ExtractCollectionNames<TCollection>,
-    TExpected extends ExtractCollectionTypeByName<TCollection, TCollectionName>
+    TCollectionName extends ExtractCollectionNames<TCollections>,
+    TExpected extends ExtractCollectionTypeByName<TCollections, TCollectionName>
   >(
     collectionName: TCollectionName,
     ...objs: TExpected[]
@@ -88,8 +88,11 @@ export class MapDbWrapper<TCollection extends Collections<unknown>>
   }
 
   async getOne<
-    TCollectionName extends ExtractCollectionNames<TCollection>,
-    TExpected extends ExtractCollectionTypeByName<TCollection, TCollectionName>,
+    TCollectionName extends ExtractCollectionNames<TCollections>,
+    TExpected extends ExtractCollectionTypeByName<
+      TCollections,
+      TCollectionName
+    >,
     TBy extends StringKeyOf<TExpected>,
     TMatching extends KeyValueOf<TExpected, TBy>
   >(
@@ -111,8 +114,11 @@ export class MapDbWrapper<TCollection extends Collections<unknown>>
   }
 
   async getMany<
-    TCollectionName extends ExtractCollectionNames<TCollection>,
-    TExpected extends ExtractCollectionTypeByName<TCollection, TCollectionName>,
+    TCollectionName extends ExtractCollectionNames<TCollections>,
+    TExpected extends ExtractCollectionTypeByName<
+      TCollections,
+      TCollectionName
+    >,
     TBy extends StringKeyOf<TExpected>,
     TMatching extends KeyValueOf<TExpected, TBy>
   >(
@@ -131,8 +137,8 @@ export class MapDbWrapper<TCollection extends Collections<unknown>>
   }
 
   async getAll<
-    TCollectionName extends ExtractCollectionNames<TCollection>,
-    TExpected extends ExtractCollectionTypeByName<TCollection, TCollectionName>
+    TCollectionName extends ExtractCollectionNames<TCollections>,
+    TExpected extends ExtractCollectionTypeByName<TCollections, TCollectionName>
   >(collectionName: TCollectionName): Promise<TExpected[] | null> {
     const collection = this._data.get(collectionName)
     if (!collection) return null
@@ -141,12 +147,15 @@ export class MapDbWrapper<TCollection extends Collections<unknown>>
   }
 
   async updateOne<
-    TCollectionName extends ExtractCollectionNames<TCollection>,
-    TExpected extends ExtractCollectionTypeByName<TCollection, TCollectionName>,
+    TCollectionName extends ExtractCollectionNames<TCollections>,
+    TExpected extends ExtractCollectionTypeByName<
+      TCollections,
+      TCollectionName
+    >,
     TBy extends StringKeyOf<TExpected>,
     TMatching extends KeyValueOf<TExpected, TBy>,
     TForUpdate extends ExtractCollectionUpdateTypeByName<
-      TCollection,
+      TCollections,
       TCollectionName
     >
   >(
@@ -174,8 +183,11 @@ export class MapDbWrapper<TCollection extends Collections<unknown>>
   }
 
   async deleteOne<
-    TCollectionName extends ExtractCollectionNames<TCollection>,
-    TExpected extends ExtractCollectionTypeByName<TCollection, TCollectionName>,
+    TCollectionName extends ExtractCollectionNames<TCollections>,
+    TExpected extends ExtractCollectionTypeByName<
+      TCollections,
+      TCollectionName
+    >,
     TBy extends StringKeyOf<TExpected>,
     TMatching extends KeyValueOf<TExpected, TBy>
   >(

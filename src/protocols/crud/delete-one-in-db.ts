@@ -6,15 +6,18 @@ import type {
 } from '@/types'
 import type { IDatabaseDeleteOne } from '@/protocols'
 
-export interface IDeleteOneInDb<TCollection extends Collections<unknown>> {
+export interface IDeleteOneInDb<TCollections extends Collections> {
   deleteOne: <
-    TCollectionName extends ExtractCollectionNames<TCollection>,
-    TExpected extends ExtractCollectionTypeByName<TCollection, TCollectionName>,
+    TCollectionName extends ExtractCollectionNames<TCollections>,
+    TExpected extends ExtractCollectionTypeByName<
+      TCollections,
+      TCollectionName
+    >,
     TBy extends StringKeyOf<TExpected>,
     TMatching extends KeyValueOf<TExpected, TBy>
   >(
     collectionName: TCollectionName,
-    db: IDatabaseDeleteOne<TCollection>,
+    db: IDatabaseDeleteOne<TCollections>,
     by: TBy,
     matching: TMatching,
   ) => Promise<TExpected | null>

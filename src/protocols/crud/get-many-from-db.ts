@@ -6,15 +6,18 @@ import type {
 } from '@/types'
 import type { IDatabaseGetMany } from '@/protocols'
 
-export interface IGetManyFromDb<TCollection extends Collections<unknown>> {
+export interface IGetManyFromDb<TCollections extends Collections> {
   getMany: <
-    TCollectionName extends ExtractCollectionNames<TCollection>,
-    TExpected extends ExtractCollectionTypeByName<TCollection, TCollectionName>,
+    TCollectionName extends ExtractCollectionNames<TCollections>,
+    TExpected extends ExtractCollectionTypeByName<
+      TCollections,
+      TCollectionName
+    >,
     TBy extends StringKeyOf<TExpected>,
     TMatching extends KeyValueOf<TExpected, TBy>
   >(
     collectionName: TCollectionName,
-    db: IDatabaseGetMany<TCollection>,
+    db: IDatabaseGetMany<TCollections>,
     by: TBy,
     matching: TMatching,
   ) => Promise<TExpected[] | null>

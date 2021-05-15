@@ -6,14 +6,17 @@ import type {
   ExtractCollectionUpdateTypeByName,
 } from '@/types'
 
-export interface IDatabaseUpdateOne<TCollection extends Collections<unknown>> {
+export interface IDatabaseUpdateOne<TCollections extends Collections> {
   updateOne: <
-    TCollectionName extends ExtractCollectionNames<TCollection>,
-    TExpected extends ExtractCollectionTypeByName<TCollection, TCollectionName>,
+    TCollectionName extends ExtractCollectionNames<TCollections>,
+    TExpected extends ExtractCollectionTypeByName<
+      TCollections,
+      TCollectionName
+    >,
     TBy extends StringKeyOf<TExpected>,
     TMatching extends KeyValueOf<TExpected, TBy>,
     TForUpdate extends ExtractCollectionUpdateTypeByName<
-      TCollection,
+      TCollections,
       TCollectionName
     >
   >(

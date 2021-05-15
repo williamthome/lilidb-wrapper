@@ -7,21 +7,19 @@ import type {
 import type { IDatabaseInsertMany } from '@/protocols'
 import type { IInsertManyInDb, IParser, IValidator } from '@/protocols/crud'
 
-export class InsertManyInDb<
-  TValidateError,
-  TCollection extends Collections<unknown>
-> implements IInsertManyInDb<TValidateError, TCollection> {
+export class InsertManyInDb<TValidateError, TCollections extends Collections>
+  implements IInsertManyInDb<TValidateError, TCollections> {
   async insertMany<
-    TCollectionName extends ExtractCollectionNames<TCollection>,
+    TCollectionName extends ExtractCollectionNames<TCollections>,
     TForCreate extends ExtractCollectionCreateTypeByName<
-      TCollection,
+      TCollections,
       TCollectionName
     >,
-    TExpected extends ExtractCollectionTypeByName<TCollection, TCollectionName>
+    TExpected extends ExtractCollectionTypeByName<TCollections, TCollectionName>
   >(
     collectionName: TCollectionName,
     validator: IValidator<TValidateError>,
-    db: IDatabaseInsertMany<TCollection>,
+    db: IDatabaseInsertMany<TCollections>,
     parser: IParser<TForCreate, TExpected>,
     ...objs: TForCreate[]
   ): Promise<TExpected[] | null | TValidateError> {

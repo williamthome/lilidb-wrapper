@@ -7,21 +7,19 @@ import type {
 import type { IDatabaseInsertOne } from '@/protocols'
 import type { IInsertOneInDb, IParser, IValidator } from '@/protocols/crud'
 
-export class InsertOneInDb<
-  TValidateError,
-  TCollection extends Collections<unknown>
-> implements IInsertOneInDb<TValidateError, TCollection> {
+export class InsertOneInDb<TValidateError, TCollections extends Collections>
+  implements IInsertOneInDb<TValidateError, TCollections> {
   async insertOne<
-    TCollectionName extends ExtractCollectionNames<TCollection>,
+    TCollectionName extends ExtractCollectionNames<TCollections>,
     TForCreate extends ExtractCollectionCreateTypeByName<
-      TCollection,
+      TCollections,
       TCollectionName
     >,
-    TExpected extends ExtractCollectionTypeByName<TCollection, TCollectionName>
+    TExpected extends ExtractCollectionTypeByName<TCollections, TCollectionName>
   >(
     collectionName: TCollectionName,
     validator: IValidator<TValidateError>,
-    db: IDatabaseInsertOne<TCollection>,
+    db: IDatabaseInsertOne<TCollections>,
     parser: IParser<TForCreate, TExpected>,
     obj: TForCreate,
   ): Promise<TExpected | null | TValidateError> {

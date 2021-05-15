@@ -10,19 +10,19 @@ import type { IValidator } from './validator'
 
 export interface IInsertManyInDb<
   TValidateError,
-  TCollection extends Collections<unknown>
+  TCollections extends Collections
 > {
   insertMany: <
-    TCollectionName extends ExtractCollectionNames<TCollection>,
+    TCollectionName extends ExtractCollectionNames<TCollections>,
     TForCreate extends ExtractCollectionCreateTypeByName<
-      TCollection,
+      TCollections,
       TCollectionName
     >,
-    TExpected extends ExtractCollectionTypeByName<TCollection, TCollectionName>
+    TExpected extends ExtractCollectionTypeByName<TCollections, TCollectionName>
   >(
     collectionName: TCollectionName,
     validator: IValidator<TValidateError>,
-    db: IDatabaseInsertMany<TCollection>,
+    db: IDatabaseInsertMany<TCollections>,
     parser: IParser<TForCreate, TExpected>,
     ...objs: TForCreate[]
   ) => Promise<TExpected[] | null | TValidateError>

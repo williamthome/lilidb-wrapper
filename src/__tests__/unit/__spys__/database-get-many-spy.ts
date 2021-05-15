@@ -8,9 +8,9 @@ import type {
 import type { IDatabaseGetMany } from '@/protocols'
 import { Spy } from '@/__tests__/unit/__helpers__'
 
-export class IDatabaseGetManySpy<TCollection extends Collections<unknown>>
+export class IDatabaseGetManySpy<TCollections extends Collections>
   extends Spy
-  implements IDatabaseGetMany<TCollection> {
+  implements IDatabaseGetMany<TCollections> {
   result?: null | unknown[]
   shouldReturnNull = false
 
@@ -18,13 +18,16 @@ export class IDatabaseGetManySpy<TCollection extends Collections<unknown>>
   by?: string
   matching?: unknown
 
-  constructor(readonly expected: ExtractCollectionTypes<TCollection>[]) {
+  constructor(readonly expected: ExtractCollectionTypes<TCollections>[]) {
     super()
   }
 
   async getMany<
-    TCollectionName extends ExtractCollectionNames<TCollection>,
-    TExpected extends ExtractCollectionTypeByName<TCollection, TCollectionName>,
+    TCollectionName extends ExtractCollectionNames<TCollections>,
+    TExpected extends ExtractCollectionTypeByName<
+      TCollections,
+      TCollectionName
+    >,
     TBy extends StringKeyOf<TExpected>,
     TMatching extends KeyValueOf<TExpected, TBy>
   >(

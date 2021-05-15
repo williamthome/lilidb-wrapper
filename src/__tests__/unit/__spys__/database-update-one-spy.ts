@@ -9,9 +9,9 @@ import type {
 import type { IDatabaseUpdateOne } from '@/protocols'
 import { Spy } from '@/__tests__/unit/__helpers__'
 
-export class IDatabaseUpdateOneSpy<TCollection extends Collections<unknown>>
+export class IDatabaseUpdateOneSpy<TCollections extends Collections>
   extends Spy
-  implements IDatabaseUpdateOne<TCollection> {
+  implements IDatabaseUpdateOne<TCollections> {
   result?: null | unknown
   shouldReturnNull = false
 
@@ -20,17 +20,20 @@ export class IDatabaseUpdateOneSpy<TCollection extends Collections<unknown>>
   matching?: unknown
   as?: unknown
 
-  constructor(readonly originalState: ExtractCollectionTypes<TCollection>) {
+  constructor(readonly originalState: ExtractCollectionTypes<TCollections>) {
     super()
   }
 
   async updateOne<
-    TCollectionName extends ExtractCollectionNames<TCollection>,
-    TExpected extends ExtractCollectionTypeByName<TCollection, TCollectionName>,
+    TCollectionName extends ExtractCollectionNames<TCollections>,
+    TExpected extends ExtractCollectionTypeByName<
+      TCollections,
+      TCollectionName
+    >,
     TBy extends StringKeyOf<TExpected>,
     TMatching extends KeyValueOf<TExpected, TBy>,
     TForUpdate extends ExtractCollectionUpdateTypeByName<
-      TCollection,
+      TCollections,
       TCollectionName
     >
   >(

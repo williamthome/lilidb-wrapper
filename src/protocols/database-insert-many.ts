@@ -4,10 +4,10 @@ import type {
   ExtractCollectionTypeByName,
 } from '@/types'
 
-export interface IDatabaseInsertMany<TCollection extends Collections<unknown>> {
+export interface IDatabaseInsertMany<TCollections extends Collections> {
   insertMany: <
-    TCollectionName extends ExtractCollectionNames<TCollection>,
-    TExpected extends ExtractCollectionTypeByName<TCollection, TCollectionName>
+    TCollectionName extends ExtractCollectionNames<TCollections>,
+    TExpected extends ExtractCollectionTypeByName<TCollections, TCollectionName>
   >(
     collectionName: TCollectionName,
     ...objs: TExpected[]

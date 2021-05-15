@@ -4,10 +4,10 @@ import type {
   ExtractCollectionTypeByName,
 } from '@/types'
 
-export interface IDatabaseGetAll<TCollection extends Collections<unknown>> {
+export interface IDatabaseGetAll<TCollections extends Collections> {
   getAll: <
-    TCollectionName extends ExtractCollectionNames<TCollection>,
-    TExpected extends ExtractCollectionTypeByName<TCollection, TCollectionName>
+    TCollectionName extends ExtractCollectionNames<TCollections>,
+    TExpected extends ExtractCollectionTypeByName<TCollections, TCollectionName>
   >(
     collectionName: TCollectionName,
   ) => Promise<TExpected[] | null>

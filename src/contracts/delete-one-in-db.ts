@@ -7,16 +7,19 @@ import type {
 import type { IDatabaseDeleteOne } from '@/protocols'
 import type { IDeleteOneInDb } from '@/protocols/crud'
 
-export class DeleteOneInDb<TCollection extends Collections<unknown>>
-  implements IDeleteOneInDb<TCollection> {
+export class DeleteOneInDb<TCollections extends Collections>
+  implements IDeleteOneInDb<TCollections> {
   async deleteOne<
-    TCollectionName extends ExtractCollectionNames<TCollection>,
-    TExpected extends ExtractCollectionTypeByName<TCollection, TCollectionName>,
+    TCollectionName extends ExtractCollectionNames<TCollections>,
+    TExpected extends ExtractCollectionTypeByName<
+      TCollections,
+      TCollectionName
+    >,
     TBy extends StringKeyOf<TExpected>,
     TMatching extends KeyValueOf<TExpected, TBy>
   >(
     collectionName: TCollectionName,
-    db: IDatabaseDeleteOne<TCollection>,
+    db: IDatabaseDeleteOne<TCollections>,
     by: TBy,
     matching: TMatching,
   ): Promise<TExpected | null> {

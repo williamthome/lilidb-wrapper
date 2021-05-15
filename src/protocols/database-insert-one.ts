@@ -4,10 +4,10 @@ import type {
   ExtractCollectionTypeByName,
 } from '@/types'
 
-export interface IDatabaseInsertOne<TCollection extends Collections<unknown>> {
+export interface IDatabaseInsertOne<TCollections extends Collections> {
   insertOne: <
-    TCollectionName extends ExtractCollectionNames<TCollection>,
-    TExpected extends ExtractCollectionTypeByName<TCollection, TCollectionName>
+    TCollectionName extends ExtractCollectionNames<TCollections>,
+    TExpected extends ExtractCollectionTypeByName<TCollections, TCollectionName>
   >(
     collectionName: TCollectionName,
     obj: TExpected,

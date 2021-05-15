@@ -6,14 +6,14 @@ import type {
 import type { IDatabaseGetAll } from '@/protocols'
 import type { IGetAllFromDb } from '@/protocols/crud'
 
-export class GetAllFromDb<TCollection extends Collections<unknown>>
-  implements IGetAllFromDb<TCollection> {
+export class GetAllFromDb<TCollections extends Collections>
+  implements IGetAllFromDb<TCollections> {
   async getAll<
-    TCollectionName extends ExtractCollectionNames<TCollection>,
-    TExpected extends ExtractCollectionTypeByName<TCollection, TCollectionName>
+    TCollectionName extends ExtractCollectionNames<TCollections>,
+    TExpected extends ExtractCollectionTypeByName<TCollections, TCollectionName>
   >(
     collectionName: TCollectionName,
-    db: IDatabaseGetAll<TCollection>,
+    db: IDatabaseGetAll<TCollections>,
   ): Promise<TExpected[] | null> {
     return await db.getAll(collectionName)
   }

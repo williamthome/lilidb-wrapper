@@ -6,9 +6,9 @@ import type {
 import type { IDatabaseInsertMany } from '@/protocols'
 import { Spy } from '@/__tests__/unit/__helpers__'
 
-export class IDatabaseInsertManySpy<TCollection extends Collections<unknown>>
+export class IDatabaseInsertManySpy<TCollections extends Collections>
   extends Spy
-  implements IDatabaseInsertMany<TCollection> {
+  implements IDatabaseInsertMany<TCollections> {
   result?: null | unknown[]
   shouldReturnNull = false
 
@@ -16,8 +16,8 @@ export class IDatabaseInsertManySpy<TCollection extends Collections<unknown>>
   objs?: unknown[]
 
   async insertMany<
-    TCollectionName extends ExtractCollectionNames<TCollection>,
-    TExpected extends ExtractCollectionTypeByName<TCollection, TCollectionName>
+    TCollectionName extends ExtractCollectionNames<TCollections>,
+    TExpected extends ExtractCollectionTypeByName<TCollections, TCollectionName>
   >(
     collectionName: TCollectionName,
     ...objs: TExpected[]

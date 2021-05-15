@@ -6,15 +6,18 @@ import type {
 } from '@/types'
 import type { IDatabaseGetOne } from '@/protocols'
 
-export interface IGetOneFromDb<TCollection extends Collections<unknown>> {
+export interface IGetOneFromDb<TCollections extends Collections> {
   getOne: <
-    TCollectionName extends ExtractCollectionNames<TCollection>,
-    TExpected extends ExtractCollectionTypeByName<TCollection, TCollectionName>,
+    TCollectionName extends ExtractCollectionNames<TCollections>,
+    TExpected extends ExtractCollectionTypeByName<
+      TCollections,
+      TCollectionName
+    >,
     TBy extends StringKeyOf<TExpected>,
     TMatching extends KeyValueOf<TExpected, TBy>
   >(
     collectionName: TCollectionName,
-    db: IDatabaseGetOne<TCollection>,
+    db: IDatabaseGetOne<TCollections>,
     by: TBy,
     matching: TMatching,
   ) => Promise<TExpected | null>
