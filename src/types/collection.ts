@@ -1,3 +1,5 @@
+import type { DeepPartial } from './helpers'
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export interface CollectionName<TName extends string> {
   collectionName: TName
@@ -12,8 +14,8 @@ export interface CollectionTypes<T, TForUpdate, TForCreate> {
 export type Collection<
   TName extends string,
   T,
-  TForUpdate,
-  TForCreate
+  TForUpdate = DeepPartial<T>,
+  TForCreate = T
 > = CollectionName<TName> & CollectionTypes<T, TForUpdate, TForCreate>
 
 export type AnyCollection = Collection<string, unknown, unknown, unknown>
