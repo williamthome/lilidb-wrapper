@@ -1,2 +1,2 @@
-export * from './collection-types-factory'
-export * from './collection-factory'
+export * from './define-collection-types'
+export * from './create-collection'
